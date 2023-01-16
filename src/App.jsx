@@ -1,5 +1,13 @@
 import { useState } from "react";
 
+const formatDate = (date) =>{
+  const year = date.getFullYear();
+  const mounth = date.getMonth();
+  const day = date.getDay();
+
+  return `${day}.${mounth}.${year}`;
+}
+
 const App = () => {
   const [todos, setTodos] = useState([
     { id: 1, name: "Купить пиво", data: new Date(), checked: false },
@@ -62,11 +70,11 @@ const App = () => {
   };
 
   return (
-    <div>
-      <div >
+    <div className="container">
+      <div className="header">
         <form onSubmit={(e) => onSubmitHandle(e)}>
-          <h2>Добавить задачу:</h2>
-          <input
+          <h2>Добавить задачу</h2>
+          <input className="header-input"
             type="text"
             placeholder="купить молоко..."
             onChange={(e) => onChangeHandle(e)}
@@ -76,19 +84,19 @@ const App = () => {
       </div>
 
       {/* Все задачи */}
-      <div>
+      <div className="todos">
         {/* Одна задача */}
         {todos.map((todo) => {
           return (
-            <div>
+            <div className="todo">
               <h3>
-                {todo.name} ({todo.data.toString()})
+                {todo.name} ({todo.data.toLocaleDateString("ru")})
               </h3>
-              <div>
-                <button onClick={() => onCheckedToggle(todo.id)}>
-                  {todo.checked ? "Не выполнена" : "Выполнена"}
+              <div className="todo_buttons">
+                <button onClick={() => onCheckedToggle(todo.id)} className="accept">
+                  {todo.checked ? "Не выполне на" : "Выполнена"}
                 </button>
-                <button onClick={() => onDeleteTodoById(todo.id)}>Удалить</button>
+                <button onClick={() => onDeleteTodoById(todo.id)} className="delete">Удалить</button>
               </div>
             </div>
           );
