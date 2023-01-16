@@ -1,4 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const useEffectComponent = () =>{
+  useEffect(()=>{
+    return ()=> console.log('Компонент был удален со страницы');
+  },[])
+
+  return (
+    <div>
+      Тестовоый компонент для проверки удаления со страницы
+    </div>
+  )
+}
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -11,11 +23,17 @@ const App = () => {
     password: "",
   });
 
+const[a,setA] = useState(0);
+
+  useEffect(() => {
+    console.log("Произошел первый рендер")
+  },[count,form]);
+
   const onChangeFromHandle = (e) => {
     setForm((prevState) => {
-        prevState = {...form};
-        prevState[e.target.name] = e.target.value
-        return prevState;
+      prevState = { ...form };
+      prevState[e.target.name] = e.target.value;
+      return prevState;
     });
   };
 
@@ -39,6 +57,10 @@ const App = () => {
       <button onClick={() => setCount((prev) => prev + 1)}>+1</button>
 
       <button onClick={() => setCount(count + 5)}>+5</button>
+
+      {
+        count>=10 ? <h1>компонент больше не доступен  </h1> :<useEffectComponent />
+      }
 
       <br />
 
