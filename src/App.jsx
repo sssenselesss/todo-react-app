@@ -1,104 +1,99 @@
-import { useState, useEffect } from "react";
-
-const useEffectComponent = () =>{
-  useEffect(()=>{
-    return ()=> console.log('Компонент был удален со страницы');
-  },[])
-
-  return (
-    <div>
-      Тестовоый компонент для проверки удаления со страницы
-    </div>
-  )
-}
+import { useState } from "react";
 
 const App = () => {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState("");
+  const [todos, setTodos] = useState([
+    { id: 1, name: "Купить пиво", data: new Date(), checked: false },
+    { id: 2, name: "Купить еще пива", data: new Date(), checked: false },
+  ]);
 
-  const [skills, setSkills] = useState(["front-end", "Back-End", "CI/CD"]);
+  const [value, setValue] = useState("");
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const onChangeHandle = (e) => {
+    setValue(e.target.value);
+  };
 
-const[a,setA] = useState(0);
+  const onSubmitHandle = (e) => {
+    e.preventDefault();
 
-  useEffect(() => {
-    console.log("Произошел первый рендер")
-  },[count,form]);
+    setTodos((prev) => {
+      prev = [...prev];
 
-  const onChangeFromHandle = (e) => {
-    setForm((prevState) => {
-      prevState = { ...form };
-      prevState[e.target.name] = e.target.value;
-      return prevState;
+      prev.push({
+        id: Date.now(),
+        name: value,
+        data: new Date(),
+        checked: false,
+      });
+
+      return prev;
+    });
+
+    setValue('');
+  };
+
+  const onCheckedToggle = (id) => {
+    setTodos((prev) => {
+      prev = [...prev];
+
+      prev = prev.map((todo) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            checked: !todo.checked,
+          };
+        }
+
+        return todo;
+      });
+      return prev;
     });
   };
 
-  const onChangeHandle = (e) => {
-    setName(e.target.value);
-    setCount(e.target.value.length);
-  };
+  // Функция удаления из массива по ID
+  const onDeleteTodoById = (id) => {
+    setTodos((prev) => {
+      prev = [...prev];
 
-  const onSubmitAddSkill = (e) => {
-    if (e.keyCode === 13) {
-      setSkills((prev) => {
-        return [...prev, e.target.value];
-      });
-      e.target.value = "";
-    }
+      prev = prev.filter((todo)=> todo.id !== id);
+
+
+      return prev;
+    });
   };
 
   return (
-    <div className="">
-      <p>Вы нажали на меня {count} раз(а)</p>
-      <button onClick={() => setCount((prev) => prev + 1)}>+1</button>
+    <div>
+      <div >
+        <form onSubmit={(e) => onSubmitHandle(e)}>
+          <h2>Добавить задачу:</h2>
+          <input
+            type="text"
+            placeholder="купить молоко..."
+            onChange={(e) => onChangeHandle(e)}
+            value={value}
+          />
+        </form>
+      </div>
 
-      <button onClick={() => setCount(count + 5)}>+5</button>
-
-      {
-        count>=10 ? <h1>компонент больше не доступен  </h1> :<useEffectComponent />
-      }
-
-      <br />
-
-      <h1>Привет, {name}!</h1>
-      <input type="text" onChange={(e) => onChangeHandle(e)} />
-
-      <br />
-      <br />
-
-      <input type="text" onKeyDown={(e) => onSubmitAddSkill(e)} />
-      <ul>
-        {skills.map((skill) => (
-          <li>{skill}</li>
-        ))}
-      </ul>
-
-      <br />
-      <br />
-      <hr />
-
-      <form onSubmit={(e) => e.preventDefault()}>
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          onChange={(e) => onChangeFromHandle(e)}
-          value={form.email}
-        />
-
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          onChange={(e) => onChangeFromHandle(e)}
-          value={form.password}
-        />
-        <button>Отправить форму</button>
-      </form>
+      {/* Все задачи */}
+      <div>
+        {/* Одна задача */}
+        {todos.map((todo) => {
+          return (
+            <div>
+              <h3>
+                {todo.name} ({todo.data.toString()})
+              </h3>
+              <div>
+                <button onClick={() => onCheckedToggle(todo.id)}>
+                  {todo.checked ? "Не выполнена" : "Выполнена"}
+                </button>
+                <button onClick={() => onDeleteTodoById(todo.id)}>Удалить</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
