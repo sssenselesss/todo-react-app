@@ -1,12 +1,8 @@
 import { useState } from "react";
+import TodoHeader from "./components/TodoHeader/TodoHeader";
+import TodoItem from "./components/TodoHeader/TodoItem/TodoItem";
 
-const formatDate = (date) =>{
-  const year = date.getFullYear();
-  const mounth = date.getMonth();
-  const day = date.getDay();
 
-  return `${day}.${mounth}.${year}`;
-}
 
 const App = () => {
   const [todos, setTodos] = useState([
@@ -14,93 +10,22 @@ const App = () => {
     { id: 2, name: "Купить еще пива", data: new Date(), checked: false },
   ]);
 
-  const [value, setValue] = useState("");
+ 
 
-  const onChangeHandle = (e) => {
-    setValue(e.target.value);
-  };
+ 
 
-  const onSubmitHandle = (e) => {
-    e.preventDefault();
-
-    setTodos((prev) => {
-      prev = [...prev];
-
-      prev.push({
-        id: Date.now(),
-        name: value,
-        data: new Date(),
-        checked: false,
-      });
-
-      return prev;
-    });
-
-    setValue('');
-  };
-
-  const onCheckedToggle = (id) => {
-    setTodos((prev) => {
-      prev = [...prev];
-
-      prev = prev.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            checked: !todo.checked,
-          };
-        }
-
-        return todo;
-      });
-      return prev;
-    });
-  };
-
-  // Функция удаления из массива по ID
-  const onDeleteTodoById = (id) => {
-    setTodos((prev) => {
-      prev = [...prev];
-
-      prev = prev.filter((todo)=> todo.id !== id);
-
-
-      return prev;
-    });
-  };
+ 
 
   return (
     <div className="container">
-      <div className="header">
-        <form onSubmit={(e) => onSubmitHandle(e)}>
-          <h2>Добавить задачу</h2>
-          <input className="header-input"
-            type="text"
-            placeholder="купить молоко..."
-            onChange={(e) => onChangeHandle(e)}
-            value={value}
-          />
-        </form>
-      </div>
+
+     <TodoHeader setTodos={setTodos}/>
+      
 
       {/* Все задачи */}
       <div className="todos">
         {/* Одна задача */}
-        {todos.map((todo) => {
-          return (
-            <div className="todo">
-              <h3>
-                {todo.name} ({todo.data.toLocaleDateString("ru")})
-              </h3>
-              <div className="todo_buttons">
-                <button onClick={() => onCheckedToggle(todo.id)} className="accept">
-                  {todo.checked ? "Не выполне на" : "Выполнена"}
-                </button>
-                <button onClick={() => onDeleteTodoById(todo.id)} className="delete">Удалить</button>
-              </div>
-            </div>
-          );
-        })}
+        {todos.map((todo) =><TodoItem setTodos={setTodos} todo={todo} /> )}
       </div>
     </div>
   );
