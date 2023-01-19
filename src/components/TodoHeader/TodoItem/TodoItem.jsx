@@ -16,6 +16,8 @@ const TodoItem = ({ setTodos, todo }) => {
     
             return todo;
           });
+
+          localStorage.setItem('todos', JSON.stringify(prev))
           return prev;
         });
       };
@@ -26,6 +28,8 @@ const TodoItem = ({ setTodos, todo }) => {
           prev = [...prev];
     
           prev = prev.filter((todo)=> todo.id !== id);
+        
+          localStorage.setItem('todos',JSON.stringify(prev))
     
     
           return prev;
@@ -34,7 +38,7 @@ const TodoItem = ({ setTodos, todo }) => {
   return (
     <div className="todo">
       <h3>
-        {todo.name} ({todo.data.toLocaleDateString("ru")})
+        {todo.name} ({formatDate(todo.date)})
       </h3>
       <div className="todo_buttons">
         <button onClick={() => onCheckedToggle(todo.id)} className="accept">

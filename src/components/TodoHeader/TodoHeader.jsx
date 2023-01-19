@@ -16,9 +16,11 @@ const TodoHeader = ({ setTodos }) => {
       prev.push({
         id: Date.now(),
         name: value,
-        data: new Date(),
+        date: new Date(),
         checked: false,
       });
+
+      localStorage.setItem('todos', JSON.stringify(prev))
 
       return prev;
     });
